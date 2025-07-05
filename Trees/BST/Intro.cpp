@@ -67,6 +67,8 @@ int main(){
 /*
   Handeling the 2 child case is important where finding predecessor and replace it with predecessor or succesor and recursively solve the copied node :)
 */
+
+// Leetcode 450. Delete Node in a BST
 class Solution {
 private:
 TreeNode* findPred(TreeNode* root){
