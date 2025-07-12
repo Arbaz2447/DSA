@@ -129,3 +129,124 @@ public:
         return res;
     }
 };
+
+// 52.  N Queens - ii
+class Solution {
+private:
+    bool isSafe(vector<vector<int>>& maze,int i , int j , int &n,unordered_map< int , bool >& pos){
+        // check row
+        if(j >= n || pos[i] == true) return false;
+        // diagonal
+        int s = i;
+        int e = j;
+
+        // 2 diagonal optimization could also be done
+        while(s >= 0 && e >= 0){
+            if(maze[s--][e--] == 1) return false;
+        }
+         s = i;
+         e = j;
+        while(s < n && e >= 0){
+            if(maze[s++][e--] == 1) return false;
+        }
+        return true;
+    }
+    void solve(vector<vector<int>>& maze,int& n, int col, int& w,int& queens,unordered_map< int , bool >& pos){
+        if(queens == n){
+            w++;
+            return;
+        }
+        // Why Not tracking row Becz -> when you place a queen you move on 
+        // eaither you get ans in depth or not i have to find all possibilities so
+
+        for(int i = 0; i < n; i++){
+            if(isSafe(maze,i,col,n,pos)){
+                queens++;
+                maze[i][col] = 1;
+                pos[i] = true;
+                solve(maze,n,col + 1,w,queens,pos);
+                pos[i] = false;
+                maze[i][col] = 0;
+                queens--;
+            }   
+        }
+    }
+public:
+    int totalNQueens(int n) {
+        unordered_map< int , bool > QueensPos;
+        vector< vector<int> > maze(n, vector<int>(n,0));
+        int size = n;
+        int numberOfways = 0;
+        int Q = 0;
+        solve(maze,size,0,numberOfways,Q,QueensPos);
+        return numberOfways;
+    }
+};
+
+// 37.Soduku solver 
+// Excellent Explination of formula 
+/*1. Get top-left corner of the 3×3 box:
+
+int startRow = (row / 3) * 3;
+int startCol = (col / 3) * 3;
+
+2. Use this loop:
+for(int k = 0; k < 9; k++) {
+    int r = startRow + k / 3;  // Row offset (0, 1, 2)
+    int c = startCol + k % 3;  // Col offset (0, 1, 2)
+    // Access cell (r, c)
+}*/
+
+class Solution {
+public:
+    bool isSafe(char& val,vector<vector<char>>& board,int& n,int& i, int& j){
+        for(int it = 0; it < 9 ; it++){
+            // you have 9 chances check rows cols and 3x3
+            if(board[i][it] == val) return false;
+            if(board[it][j] == val) return false;
+            
+            // get the top left i mean get initial positions
+            int startRow = (i / 3) * 3;
+            int startCol = (j / 3) * 3;
+
+            // traverse that initial position 3*3 times
+            
+            int rowIndex = startRow + (it / 3);// only move once after 3 steps
+            int colIndex = startCol + (it % 3); // this should move every time
+            if(board[rowIndex][colIndex] == val) return false;
+        }
+        return true;
+    }
+    
+    bool solve(vector<vector<char>>& board,int& n){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                // if its empty cell
+                if(board[i][j] == '.'){
+                    // you can place Numbers 1 - 9
+                    for(int k = 1; k <= 9; k++){
+                        char val = '0' + k;
+                        if(isSafe(val,board,n,i,j)){
+                            board[i][j] = val;
+                            bool solved = solve(board,n);
+                            if(solved){ // if board gets solved then the value putted is gud
+                                return true;
+                            }else{ // nah then backtrack and use another value.
+                                board[i][j] = '.';
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        // dont care 
+        return true;
+    }
+    void solveSudoku(vector<vector<char>>& board) {
+
+        // do backtracking if wrong ans else make the changes permanent
+        int n = board.size();
+        bool ans = solve(board,n);
+    }
+};
