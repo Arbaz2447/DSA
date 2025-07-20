@@ -42,6 +42,6 @@ A quick reference guide to the core concepts of graph algorithms. This repositor
 
 ## 🔄 Cycle Detection (The Loop Finder)
 
-> **Undirected Cycle Detection:** Uses DSU or DFS to check if an edge connects two nodes already in the same component.
+> **Undirected Cycle Detection:** Uses DSU DSU helps detect a cycle by efficiently checking if the two nodes an edge connects are already in the same set. If they are, adding the new edge between them would form a cycle. or DFS to check if an edge connects two nodes already in the same component.
 
 > **Directed Cycle Detection:** Uses DFS to check if you encounter a node that is currently in the active recursion path.
