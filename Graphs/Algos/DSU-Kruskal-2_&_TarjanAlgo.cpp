@@ -178,7 +178,7 @@ The idea is simpler: the distance from Point A to Point B is the exact same as t
 Because the connection is mutual, we don't need to create two edges in our list representing the same connection. By using a loop like for j = i + 1, we ensure that for every pair of points, we only calculate the distance and add the edge to our list once. This makes our initial list half the size, which is much faster to create and sort.
 */
 
-// 1192. Critical Connections in a Network
+// 1192. Critical Connections in a Network Finding Bridge ! 
 
 // How DFS is used to find bridges ! or biconnected components
 // in simple terms they are independent && low value fk it we have to pass low to top ! any how not imp
@@ -263,5 +263,58 @@ public:
             }
         }
         return res;
+    }
+};
+
+// Articulation Point - I GFG 
+class Solution {
+  public:
+    void dfs(vector<int> adj[], vector<bool>& visited, vector<int>& disc, vector<int>& low,int node,int parent, int& timer,vector<int>& res){
+        visited[node] = true;
+        low[node] = disc[node] = timer;
+        timer++;
+        
+        for(auto& neigh : adj[node]){
+            if(neigh == parent) continue;
+            
+            if(!visited[neigh]){
+                dfs(adj,visited,disc, low, neigh, node, timer, res);
+                // back track and mark all in cycle
+                low[node] = min(low[node], disc[neigh]);
+                
+                // check for articulation point if say my child has > lower time than my disc then 
+                // there is no other way for my child other than me
+                // if its equal to that means they are in a cycle saturated without any other connection
+                // except this 
+                
+                // could be simplified but more sound !
+                if(disc[node] < low[neigh] && parent != -1) res.push_back(node);
+                else if(disc[node] == low[neigh] && parent != -1)  res.push_back(node);
+                
+                
+                
+            }else{
+                // backedge found
+                low[node] = min(low[node], disc[neigh]);
+            }
+            
+        }
+    }
+    vector<int> articulationPoints(int V, vector<int> adj[]) {
+       vector<int> disc(V);
+       vector<int> low(V);
+       vector<int> res;
+       vector<bool> visited(V,false);
+       int timer = 0;
+       
+       // dfs for all nodes components have -1 as parent
+       for(int i = 0; i < V; i++){
+           if(!visited[i]){
+               dfs(adj,visited,disc,low,i, -1,timer,res);
+           }
+       }
+       if(res.size() == 0) return {-1};
+       sort(res.begin() , res.end());
+       return res;
     }
 };
