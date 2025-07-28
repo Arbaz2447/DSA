@@ -188,4 +188,92 @@ public:
         return -1;
     }
 };
+// 127. Word Ladder
+// A transformation sequence from word beginWord to word endWord using a dictionary wordList is a
+// sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
+// Every adjacent pair of words differs by a single letter.
+// Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
+// sk == endWord
+// Given two words, beginWord and endWord, and a dictionary wordList, return the number of words
+// in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.
 
+
+// Brute same as mutations prev question 
+// class Solution {
+// private:
+//     bool isNeighbor(str& s1, str& s2){
+//         int n = s1.length(), m = s2.length();
+//         if( n != m) return false;
+//         int cnt = 0;
+//         for(int i = 0; i < n; i++){
+//             if(s1[i] != s2[i]) cnt++;
+//         }
+//         return (cnt == 1);
+//     }
+// public:
+//     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+//         if(beginWord == endWord) return 1;
+//         queue< pii > q;
+//         int n = wordList.size();
+//         unordered_set<str> visited;
+//         visited.insert(beginWord);
+//         for(int i = 0; i < n;i++){
+//             if(isNeighbor(beginWord, wordList[i])){
+//                 q.push({i, 2});
+//                 visited.insert(wordList[i]);
+//             }
+//         }
+        
+        
+//         while(!q.empty()){
+//             auto [index,count] = q.front();q.pop();
+//             if(wordList[index] == endWord) return count;
+
+//             for(int j = 0; j < wordList.size(); j++){
+//                 if(isNeighbor(wordList[index], wordList[j]) && visited.find(wordList[j]) == visited.end()){
+//                     visited.insert(wordList[j]);
+//                     q.push({j,count + 1});
+//                 }
+//             }
+//         }
+//         return 0;
+//     }
+// };
+
+// Aha..! Exteremely New Type of solving technique !
+#define vi vector<int>
+#define pis pair<int,string>
+#define endl "\n"
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        
+        // to make search o(n) using unordered_set;
+        unordered_set< string > words(wordList.begin(), wordList.end());
+        // index and the count
+        queue<pis> q;
+        q.push({1, beginWord});
+
+        while(!q.empty()){
+            auto [cnt, word] = q.front();q.pop();
+
+            if(word == endWord) return cnt;
+            
+            string temp = word;    
+            for(int i = 0; i < temp.size(); i++){
+                char letter = temp[i];
+                for(char j = 'a' ; j <= 'z'; j++){ 
+                    temp[i] = j;
+                    if(words.find(temp) != words.end()){
+                        // Neighbours are found
+                        q.push({cnt + 1, temp});
+                        words.erase(word); // removed for avoiding backward traversal IMP! works like visited and we cant go back !
+                    }
+                }
+                temp[i] = letter; // backtracking 
+            }
+        }
+        return 0;
+        
+    }
+};
