@@ -67,6 +67,7 @@ A quick reference guide to the core concepts of graph algorithms. This repositor
 > root node always comes on top becz its like post order traversal and non reachable nodes src nodes other than root are on top of root !
 > after we process src nodes later became sink we have roots so that all cycles and paths accessable gets visited , sink nodes in prev context
 > now became src so inaccessable in path and in next steps they are visited this trapped !
+https://g.co/gemini/share/ba8e6cf1f3bd
 
 ## 🔄 Tarjan Algo Biconnected components (bridges , articulation points ) 
 
