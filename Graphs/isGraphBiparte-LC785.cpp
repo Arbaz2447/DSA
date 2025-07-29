@@ -1,6 +1,6 @@
 // 785. Is Graph Bipartite?
 // Github - 
-// >**https://g.co/gemini/share/656b54684846**
+// https://g.co/gemini/share/656b54684846
 class DSU{
     public:
     vector<int> parent;
