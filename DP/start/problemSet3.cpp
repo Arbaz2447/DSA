@@ -44,4 +44,61 @@ public:
         return findWays(nums,target,dp);
     }
 };
+
+// 0 - 1 Knapsack Problem , CodeStudio !
+
+class Solution {
+  public:
+  
+    int getMax(int w, int item, vector<int> &val, vector<int> &wt,vector<vector<int>> &dp){
+        if(item == 0){
+            if(wt[item] <= w){
+                return val[item];
+            }
+            return 0;
+        }
+        if(dp[item][w] != -1) return dp[item][w];
+       
+        int maxOnEx = getMax(w, item - 1,val, wt,dp);
+        int maxOnIn = 0;
+        if(wt[item] <= w){
+             maxOnIn = val[item] + getMax(w - wt[item], item - 1,val , wt,dp);
+        }
+        
+        return dp[item][w] = max(maxOnEx,maxOnIn);
+    }
+    int knapsack(int W, vector<int> &val, vector<int> &wt) {
+        vector< vector<int> > dp(val.size(), vector<int>(W + 1,-1));
+        return getMax(W,val.size() - 1, val, wt,dp);
+    }
+};
+
+// Decode Ways 91 Leetcode !
+class Solution {
+private:
+    int totalWays(string& s,int startI, int& n,vector<int>& dp){
+        if(startI >= n) return 1;
+        if(s[startI] == '0') return 0;
+        // Memoize !
+        if(dp[startI] != -1) return dp[startI];
+
+        int parititon1 = totalWays(s,startI + 1, n, dp);
+
+        int parititon2 = 0;
+        // Check if its <= 26 and check will i get valid next call !
+        if(startI + 1 < n){
+            int num = (s[startI] - '0') * 10 + (s[startI + 1] - '0');  
+            if(num <= 26) parititon2 = totalWays(s,startI + 2, n, dp);
+        }
+
+        return dp[startI] = parititon1 + parititon2;
+    }
+public:
+    int numDecodings(string s) {
+        int n = s.length();
+        vector<int> dp(n, -1);
+        return totalWays(s,0,n,dp);
+    }
+};
+
 343. Integer Break (pending ... !).
