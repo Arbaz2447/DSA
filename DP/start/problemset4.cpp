@@ -1,7 +1,7 @@
 2787. Ways to Express an Integer as Sum of Powers
 279. Perfect Squares
 983. Minimum Cost For Tickets
-
+221. Maximal Square
 
 // 2787. Ways to Express an Integer as Sum of Powers
 // Given two positive integers n and x.
@@ -105,4 +105,54 @@ public:
         return minimumCost(days,costs,0,days.size(),dp);
     }
 };
+// Tabulation
+ int TabminimumCost(vector<int>& days, vector<int>& cost,int n){
+        vector<int> dp(n + 1, INT_MAX);
+        dp[n] = 0;
+        for(int k = n - 1; k >= 0; k--){
+            int dailyPass = cost[0] + dp[k + 1];
 
+            int validDays = days[k] + 6;
+            int i;
+            for(i = k ; i < n && days[i] <= validDays; i++){}
+            int weeklyPass = cost[1] + dp[i];
+
+            validDays = days[k] + 29;
+            int j;
+            for(j = k ; j < n && days[j] <= validDays; j++){}
+            int monthlyPass = cost[2] + dp[j];
+
+            dp[k] = min({dailyPass,weeklyPass,monthlyPass});
+        }
+        return dp[0];
+        
+    }
+// 221. Maximal Square
+class Solution {
+private:
+    int getMax(vector<vector<char>>& grid, int i, int j, int& maxi, int& n, int &m,vector<vector<int>>& dp){
+        // base case 
+        if(i >= n || j >= m) return 0; // Area of square ! 
+        if(dp[i][j] != -1) return dp[i][j];
+        // main Thinking if you include current sq How much bigger sq you can form ?
+        int onesRight = getMax(grid, i , j + 1, maxi,n,m,dp);
+        int onesDiagonal = getMax(grid, i + 1, j + 1, maxi,n,m,dp);
+        int onesDown = getMax(grid, i + 1, j , maxi,n,m,dp);
+
+        if(grid[i][j] == '1'){
+            int sqFormed = 1 + min({onesRight, onesDiagonal,onesDown});
+            maxi = max(maxi , sqFormed);
+            return dp[i][j] = sqFormed;
+        }
+        return dp[i][j] = 0;
+    }
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int n = matrix.size(), m = matrix[0].size();
+        vector<vector<int>> dp(n, vector<int>(m,-1));
+
+        int maxi = INT_MIN;
+        int sqByFirst = getMax(matrix, 0,0, maxi, n,m, dp);
+        return (maxi == INT_MIN)? 0 : maxi * maxi;
+    }
+};
