@@ -2,6 +2,7 @@
 279. Perfect Squares
 983. Minimum Cost For Tickets
 221. Maximal Square
+518. Coin Change II
 
 // 2787. Ways to Express an Integer as Sum of Powers
 // Given two positive integers n and x.
@@ -154,5 +155,30 @@ public:
         int maxi = INT_MIN;
         int sqByFirst = getMax(matrix, 0,0, maxi, n,m, dp);
         return (maxi == INT_MIN)? 0 : maxi * maxi;
+    }
+};
+
+// 518. Coin Change II
+class Solution {
+private:
+    // dp[amount][coin] no of ways 6 can be made by coin 2 say !
+    int getNoOfWays(int amount, int idx,vector<int>& coins,vector<vector<int>>& dp){
+        if(amount == 0) return 1;
+        if(idx >= coins.size()) return 0;
+        if(dp[amount][idx] != -1) return dp[amount][idx];
+        
+        int includeCoin = 0;
+        
+        if(amount - coins[idx] >= 0)
+        includeCoin = getNoOfWays(amount - coins[idx], idx ,coins,dp);
+        
+        int excludeCoin = getNoOfWays(amount, idx + 1,coins,dp);
+       
+        return dp[amount][idx] = includeCoin + excludeCoin;
+    }
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<vector<int>> dp(amount + 1, vector<int>(coins.size(), -1));
+        return getNoOfWays(amount,0 ,coins,dp);
     }
 };
